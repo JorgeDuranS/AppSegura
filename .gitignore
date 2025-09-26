@@ -1,0 +1,8 @@
+# ENV Files and folders
+**/*.env
+
+# KEY Files
+**/*.key
+
+# VS Code files
+**/*.code-workspace
