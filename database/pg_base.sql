@@ -13,3 +13,7 @@ data BYTEA NOT NULL,
 FOREIGN KEY (username) REFERENCES
 users (username)
 );
+
+-- Alteración del tipo de datos del campo `password` en `users`
+ALTER TABLE users
+ALTER COLUMN password SET DATA TYPE VARCHAR(256)
