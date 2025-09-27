@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Autenticación Segura</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" 
+        href="{{ url_for('static', filename='css/style.css' ) }}">
 </head>
 
 <body>
@@ -25,7 +26,7 @@
         <input type="password" id="reg_password" name="password" required>
         <button type="submit">Register</button>
     </form>
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js' ) }}"></script>
 </body>
 
 </html>
