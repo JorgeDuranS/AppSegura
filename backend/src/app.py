@@ -93,7 +93,7 @@ def register():
     return "Credenciales incorrectas"
 
 
-@app.route('/data', methods=['POST'])
+@app.route('/data', methods=['GET', 'POST'])
 def save_data():
     
     if 'username' in session:
