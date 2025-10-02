@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Datos - Aplicación Segura{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-0">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex-1 min-w-0">
+                    <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                        Gestión de Datos Seguros
+                    </h1>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Guarda y gestiona tu información de forma segura con encriptación de extremo a extremo.
+                    </p>
+                </div>
+                <div class="mt-4 flex md:mt-0 md:ml-4">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Datos Encriptados
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Data Input Section -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-900 flex items-center">
+                        <svg class="mr-2 h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Guardar Datos
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Ingresa la información que deseas almacenar de forma segura.
+                    </p>
+                </div>
+
+                <form id="dataForm" class="p-6">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="data-input" class="block text-sm font-medium text-gray-700 mb-2">
+                                Información a Guardar
+                            </label>
+                            <textarea id="data-input" name="data" rows="8"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm resize-none transition-colors"
+                                placeholder="Escribe aquí la información que deseas guardar de forma segura...&#10;&#10;Ejemplos:&#10;• Notas personales&#10;• Contraseñas importantes&#10;• Información confidencial&#10;• Cualquier texto que necesites proteger"></textarea>
+                            <div class="mt-2 flex justify-between items-center">
+                                <div id="char-count" class="text-xs text-gray-500">0 caracteres</div>
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <svg class="mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Se encriptará automáticamente
+                                </div>
+                            </div>
+                            <div id="data-error" class="mt-1 text-sm text-red-600 hidden"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                        <button type="submit" id="save-button"
+                            class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                            <svg id="save-icon" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <svg id="save-loading" class="animate-spin mr-2 h-4 w-4 hidden" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            <span id="save-text">Guardar Datos</span>
+                        </button>
+
+                        <button type="button" id="clear-button"
+                            class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                            <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Data Display Section -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-900 flex items-center">
+                        <svg class="mr-2 h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Datos Guardados
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Tu información desencriptada y lista para usar.
+                    </p>
+                </div>
+
+                <div class="p-6">
+                    <!-- Loading State -->
+                    <div id="data-loading" class="hidden">
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                        </div>
+                    </div>
+
+                    <!-- No Data State -->
+                    <div id="no-data-state" class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">No hay datos guardados</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            Comienza guardando información en el formulario de la izquierda.
+                        </p>
+                    </div>
+
+                    <!-- Data Display -->
+                    <div id="data-display" class="hidden">
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <svg class="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span id="last-updated">Última actualización: --</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button id="copy-button"
+                                        class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                        <svg id="copy-icon" class="mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        <svg id="copied-icon" class="mr-1 h-3 w-3 hidden" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span id="copy-text">Copiar</span>
+                                    </button>
+                                    <button id="edit-button"
+                                        class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                        <svg class="mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Editar
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="data-content"
+                                class="whitespace-pre-wrap text-sm text-gray-900 font-mono bg-white p-3 rounded border max-h-64 overflow-y-auto">
+                                <!-- Data content will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="data-error-state" class="hidden text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">Error al cargar los datos</h3>
+                        <p class="mt-1 text-sm text-gray-500" id="error-message">
+                            Hubo un problema al recuperar tu información.
+                        </p>
+                        <div class="mt-4">
+                            <button id="retry-button"
+                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Reintentar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Refresh Button -->
+                    <div class="mt-4 text-center">
+                        <button id="refresh-button"
+                            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                            <svg id="refresh-icon" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <svg id="refresh-loading" class="animate-spin mr-2 h-4 w-4 hidden" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Information -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">
+                        Información de Seguridad
+                    </h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Todos tus datos se encriptan automáticamente antes de ser almacenados</li>
+                            <li>Solo tú puedes acceder a tu información con tu cuenta</li>
+                            <li>Los datos se almacenan de forma segura en la base de datos local</li>
+                            <li>Nunca compartimos tu información con terceros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dataForm = document.getElementById('dataForm');
+        const dataInput = document.getElementById('data-input');
+        const charCount = document.getElementById('char-count');
+        const saveButton = document.getElementById('save-button');
+        const clearButton = document.getElementById('clear-button');
+        const refreshButton = document.getElementById('refresh-button');
+        const retryButton = document.getElementById('retry-button');
+        const copyButton = document.getElementById('copy-button');
+        const editButton = document.getElementById('edit-button');
+
+        // Character counter
+        dataInput.addEventListener('input', function () {
+            const count = this.value.length;
+            charCount.textContent = `${count} caracteres`;
+
+            if (count > 1000) {
+                charCount.classList.add('text-yellow-600');
+            } else {
+                charCount.classList.remove('text-yellow-600');
+            }
+        });
+
+        // Clear button
+        clearButton.addEventListener('click', function () {
+            if (dataInput.value.trim() && !confirm('¿Estás seguro de que quieres limpiar el contenido?')) {
+                return;
+            }
+            dataInput.value = '';
+            dataInput.dispatchEvent(new Event('input'));
+            dataInput.focus();
+        });
+
+        // Copy button
+        copyButton.addEventListener('click', function () {
+            const content = document.getElementById('data-content').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                const copyIcon = document.getElementById('copy-icon');
+                const copiedIcon = document.getElementById('copied-icon');
+                const copyText = document.getElementById('copy-text');
+
+                copyIcon.classList.add('hidden');
+                copiedIcon.classList.remove('hidden');
+                copyText.textContent = '¡Copiado!';
+
+                setTimeout(() => {
+                    copyIcon.classList.remove('hidden');
+                    copiedIcon.classList.add('hidden');
+                    copyText.textContent = 'Copiar';
+                }, 2000);
+            }).catch(() => {
+                alert('Error al copiar al portapapeles');
+            });
+        });
+
+        // Edit button
+        editButton.addEventListener('click', function () {
+            const content = document.getElementById('data-content').textContent;
+            dataInput.value = content;
+            dataInput.dispatchEvent(new Event('input'));
+            dataInput.focus();
+            dataInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Show/hide states
+        function showState(stateId) {
+            ['no-data-state', 'data-display', 'data-error-state', 'data-loading'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(stateId).classList.remove('hidden');
+        }
+
+        function setButtonLoading(button, loading, iconId, loadingId, textId, loadingText, normalText) {
+            button.disabled = loading;
+            const icon = document.getElementById(iconId);
+            const loadingIcon = document.getElementById(loadingId);
+            const text = textId ? document.getElementById(textId) : null;
+
+            if (loading) {
+                if (icon) icon.classList.add('hidden');
+                if (loadingIcon) loadingIcon.classList.remove('hidden');
+                if (text && loadingText) text.textContent = loadingText;
+            } else {
+                if (icon) icon.classList.remove('hidden');
+                if (loadingIcon) loadingIcon.classList.add('hidden');
+                if (text && normalText) text.textContent = normalText;
+            }
+        }
+
+        // Load data
+        function loadData() {
+            showState('data-loading');
+            setButtonLoading(refreshButton, true, 'refresh-icon', 'refresh-loading', null, null, null);
+
+            fetch('/api/data', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setButtonLoading(refreshButton, false, 'refresh-icon', 'refresh-loading', null, null, null);
+
+                    if (data.success && data.data) {
+                        document.getElementById('data-content').textContent = data.data;
+                        document.getElementById('last-updated').textContent =
+                            `Última actualización: ${new Date(data.updated_at || Date.now()).toLocaleString('es-ES')}`;
+                        showState('data-display');
+                    } else if (data.success && !data.data) {
+                        showState('no-data-state');
+                    } else {
+                        document.getElementById('error-message').textContent = data.message || 'Error desconocido';
+                        showState('data-error-state');
+                    }
+                })
+                .catch(error => {
+                    setButtonLoading(refreshButton, false, 'refresh-icon', 'refresh-loading', null, null, null);
+                    document.getElementById('error-message').textContent = 'Error de conexión';
+                    showState('data-error-state');
+                    console.error('Error:', error);
+                });
+        }
+
+        // Save data
+        dataForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const data = dataInput.value.trim();
+            if (!data) {
+                document.getElementById('data-error').textContent = 'Por favor ingresa algunos datos para guardar';
+                document.getElementById('data-error').classList.remove('hidden');
+                dataInput.classList.add('border-red-300');
+                return;
+            }
+
+            // Clear previous errors
+            document.getElementById('data-error').classList.add('hidden');
+            dataInput.classList.remove('border-red-300');
+
+            setButtonLoading(saveButton, true, 'save-icon', 'save-loading', 'save-text', 'Guardando...', 'Guardar Datos');
+
+            const formData = new FormData();
+            formData.append('data', data);
+            formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+
+            fetch('/api/data', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setButtonLoading(saveButton, false, 'save-icon', 'save-loading', 'save-text', 'Guardando...', 'Guardar Datos');
+
+                    if (data.success) {
+                        // Show success feedback
+                        document.getElementById('save-text').textContent = '¡Guardado!';
+                        setTimeout(() => {
+                            document.getElementById('save-text').textContent = 'Guardar Datos';
+                        }, 2000);
+
+                        // Clear form and reload data
+                        dataInput.value = '';
+                        dataInput.dispatchEvent(new Event('input'));
+                        loadData();
+
+                        // Show success message
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50';
+                        successDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Datos guardados correctamente
+                    </div>
+                `;
+                        document.body.appendChild(successDiv);
+                        setTimeout(() => successDiv.remove(), 3000);
+
+                    } else {
+                        document.getElementById('data-error').textContent = data.message || 'Error al guardar los datos';
+                        document.getElementById('data-error').classList.remove('hidden');
+                        dataInput.classList.add('border-red-300');
+                    }
+                })
+                .catch(error => {
+                    setButtonLoading(saveButton, false, 'save-icon', 'save-loading', 'save-text', 'Guardando...', 'Guardar Datos');
+                    document.getElementById('data-error').textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+                    document.getElementById('data-error').classList.remove('hidden');
+                    dataInput.classList.add('border-red-300');
+                    console.error('Error:', error);
+                });
+        });
+
+        // Event listeners
+        refreshButton.addEventListener('click', loadData);
+        retryButton.addEventListener('click', loadData);
+
+        // Real-time validation
+        dataInput.addEventListener('input', function () {
+            if (this.classList.contains('border-red-300')) {
+                this.classList.remove('border-red-300');
+                document.getElementById('data-error').classList.add('hidden');
+            }
+        });
+
+        // Initial load
+        loadData();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplicación web segura con autenticación y encriptación de datos">
+    <title>{% block title %}Aplicación Segura{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Additional head content -->
+    {% block head %}{% endblock %}
+</head>
+<body class="h-full">
+    <div class="min-h-full">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                <a href="/" class="hover:text-primary-600 transition-colors">
+                                    🔐 Aplicación Segura
+                                </a>
+                            </h1>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation menu -->
+                    <div class="flex items-center space-x-4">
+                        {% block nav_items %}
+                        {% if session.get('username') %}
+                            <span class="text-sm text-gray-700">
+                                Hola, <span class="font-medium">{{ session.username }}</span>
+                            </span>
+                            <a href="/data" 
+                               class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                Mis Datos
+                            </a>
+                            <form method="POST" action="/logout" class="inline" id="logout-form">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" 
+                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                                        id="logout-btn">
+                                    Cerrar Sesión
+                                </button>
+                            </form>
+                        {% else %}
+                            <a href="/login" 
+                               class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                Iniciar Sesión
+                            </a>
+                            <a href="/register" 
+                               class="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                Registrarse
+                            </a>
+                        {% endif %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                    {% for category, message in messages %}
+                        <div class="rounded-md p-4 mb-4 {% if category == 'error' %}bg-red-50 border border-red-200{% elif category == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    {% if category == 'error' %}
+                                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% elif category == 'success' %}
+                                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% else %}
+                                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm {% if category == 'error' %}text-red-800{% elif category == 'success' %}text-green-800{% else %}text-blue-800{% endif %}">
+                                        {{ message }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-gray-200 mt-12">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="text-center text-sm text-gray-500">
+                    <p>&copy; 2025 Aplicación Segura. Todos los derechos reservados.</p>
+                    <p class="mt-1">Talento Tech - Bootcamp Ciberseguridad nivel Intermedio</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    {% block scripts %}{% endblock %}
+    
+    <!-- Session management and logout functionality -->
+    <script>
+        // Enhanced logout functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutForm = document.getElementById('logout-form');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            if (logoutForm && logoutBtn) {
+                logoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Disable button to prevent double submission
+                    logoutBtn.disabled = true;
+                    logoutBtn.textContent = 'Cerrando...';
+                    
+                    // Get form data
+                    const formData = new FormData(logoutForm);
+                    
+                    // Send logout request
+                    fetch('/logout', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Clear any client-side session data
+                            sessionStorage.clear();
+                            localStorage.removeItem('user_session');
+                            
+                            // Redirect to home page
+                            window.location.href = data.redirect || '/';
+                        } else {
+                            throw new Error(data.error || 'Error al cerrar sesión');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
+                        // Fallback: redirect to home page anyway
+                        window.location.href = '/';
+                    })
+                    .finally(() => {
+                        // Re-enable button
+                        logoutBtn.disabled = false;
+                        logoutBtn.textContent = 'Cerrar Sesión';
+                    });
+                });
+            }
+            
+            // Session timeout warning (optional enhancement)
+            let sessionWarningShown = false;
+            const SESSION_TIMEOUT = 3600 * 1000; // 1 hour in milliseconds (fixed)
+            const WARNING_TIME = SESSION_TIMEOUT - (5 * 60 * 1000); // 5 minutes before timeout
+            
+            // Only show warning if user is logged in
+            {% if session.username %}
+            setTimeout(function() {
+                if (!sessionWarningShown) {
+                    sessionWarningShown = true;
+                    if (confirm('Tu sesión expirará en 5 minutos. ¿Deseas continuar?')) {
+                        // Refresh the page to extend session
+                        window.location.reload();
+                    }
+                }
+            }, WARNING_TIME);
+            {% endif %}
+        });
+    </script>
+</body>
+</html>

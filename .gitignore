@@ -1,11 +1,23 @@
 # ENV Files and folders
 **/*.env
+.env
 
 # KEY Files
 **/*.key
+
+# SQLite Database files
+*.db
+*.sqlite
+*.sqlite3
+app.db
 
 # VS Code files
 **/*.code-workspace
 
 # Pycache files
 **/*__pycache__*
+
+# Virtual environment
+venv/
+env/
+.venv/
