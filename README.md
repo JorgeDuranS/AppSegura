@@ -26,7 +26,7 @@ Una aplicación web segura desarrollada durante el bootcamp de Talento Tech Cibe
 
 1. **Clonar el repositorio**
    ```bash
-   git clone <url-del-repositorio>
+   git clone (https://github.com/JorgeDuranS/AppSegura.git)
    cd webapp-segura
    ```
 
