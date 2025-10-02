@@ -26,8 +26,8 @@ Una aplicación web segura desarrollada durante el bootcamp de Talento Tech Cibe
 
 1. **Clonar el repositorio**
    ```bash
-   git clone (https://github.com/JorgeDuranS/AppSegura.git)
-   cd webapp-segura
+   git clone https://github.com/JorgeDuranS/AppSegura.git
+   cd AppSegura
    ```
 
 2. **Crear entorno virtual (recomendado)**
@@ -35,7 +35,7 @@ Una aplicación web segura desarrollada durante el bootcamp de Talento Tech Cibe
    python -m venv venv
    
    # En Windows:
-   venv\Scripts\activate
+   venv/Scripts/activate
    
    # En macOS/Linux:
    source venv/bin/activate
