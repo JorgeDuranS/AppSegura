@@ -68,7 +68,22 @@ except DatabaseError as e:
     logger.error(f"Failed to initialize database: {e}")
     raise
 
-fernet_key = read_secret_key(os.path.join(os.path.dirname(__file__), '..', '.secret.key'))
+# Initialize encryption key with robust error handling
+try:
+    key_path = os.path.join(os.path.dirname(__file__), '.secret.key')
+    fernet_key = read_secret_key(key_path)
+    logger.info("Encryption key initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize encryption key: {e}")
+    logger.info("Attempting to create new encryption key...")
+    try:
+        # Try alternative path in case of permission issues
+        alt_key_path = os.path.join(os.path.dirname(__file__), '..', '.secret.key')
+        fernet_key = read_secret_key(alt_key_path)
+        logger.info("Encryption key initialized successfully with alternative path")
+    except Exception as e2:
+        logger.critical(f"Failed to initialize encryption key with both paths: {e2}")
+        raise Exception("Cannot initialize application without encryption key")
 
 
 def get_client_ip():

@@ -48,6 +48,25 @@ Una aplicación web segura desarrollada durante el bootcamp de Talento Tech Cibe
 
 4. **Ejecutar la aplicación**
    ```bash
+   # Método recomendado (con inicialización automática)
+   python start_app.py
+   
+   # O método tradicional
+   python backend/src/app.py
+   ```
+
+## 🔧 Solución de Problemas
+
+### Error de Clave de Encriptación
+
+Si encuentras errores relacionados con `Fernet key must be 32 url-safe base64-encoded bytes`, ejecuta:
+
+```bash
+# Inicializar componentes manualmente
+python backend/src/init_app.py
+
+# Luego ejecutar la aplicación
+python backend/src/app.py
    python backend/src/app.py
    ```
 
